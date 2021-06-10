@@ -44,7 +44,7 @@ paths:
           "200":
             statusCode: "301"
             responseParameters:
-              method.response.header.Location: {"Fn::Sub": ["'${shortUrlPrefix}/error?error=url_not_found'", {"shortUrlPrefix": {"Ref": "CustomDomainName"}}] }
+              method.response.header.Location: "'error?error=url_not_found'"
               method.response.header.Cache-Control: "'max-age=300'"
             responseTemplates:
               application/json: "#set($inputRoot = $input.path('$')) \
