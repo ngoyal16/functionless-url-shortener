@@ -89,9 +89,9 @@ paths:
           application/json: { "Fn::Sub": "{\"TableName\": \"${LinkTable}\",\
             \"ConditionExpression\":\"attribute_not_exists(id)\", \
             \"Key\": {\"id\": {\"S\": $input.json('$.id')}}, \
-            \"ExpressionAttributeNames\": {\"#u\": \"url\",\"#o\": \"owner\",\"#ts\": \"timestamp\",\"#ip\": \"sourceIp\", \"#accId\": \"accountId\", \"#caller\": \"caller\", \"#principalOrgId\": \"principalOrgId\", \"#userAgent\": \"userAgent\", \"#userArn\": \"userArn\"}, \
-            \"ExpressionAttributeValues\":{\":u\": {\"S\": $input.json('$.url')},\":o\": {\"S\": \"$context.identity.user\"},\":ts\": {\"S\": \"$context.requestTime\"},\":ip\": {\"S\": \"$context.identity.sourceIp\"},\":accId\": {\"S\": \"$context.identity.accountId\"},\":caller\": {\"S\": \"$context.identity.caller\"},\":principalOrgId\": {\"S\": \"$context.identity.principalOrgId\"},\":userAgent\": {\"S\": \"$context.identity.userAgent\"},\":userArn\": {\"S\": \"$context.identity.userArn\"}}, \
-            \"UpdateExpression\": \"SET #u = :u, #o = :o, #ts = :ts, #ip = :ip, #accId = :accId, #caller = :caller, #principalOrgId = :principalOrgId, #userAgent = :userAgent, #userArn = :userArn\", \
+            \"ExpressionAttributeNames\": {\"#u\": \"url\",\"#o\": \"owner\",\"#ts\": \"timestamp\",\"#ip\": \"sourceIp\", \"#accId\": \"accountId\", \"#caller\": \"caller\", \"#principalOrgId\": \"principalOrgId\", \"#userAgent\": \"userAgent\", \"#userArn\": \"userArn\", \"#ttl\": \"ttl\"}, \
+            \"ExpressionAttributeValues\":{\":u\": {\"S\": $input.json('$.url')},\":o\": {\"S\": \"$context.identity.user\"},\":ts\": {\"S\": \"$context.requestTime\"},\":ip\": {\"S\": \"$context.identity.sourceIp\"},\":accId\": {\"S\": \"$context.identity.accountId\"},\":caller\": {\"S\": \"$context.identity.caller\"},\":principalOrgId\": {\"S\": \"$context.identity.principalOrgId\"},\":userAgent\": {\"S\": \"$context.identity.userAgent\"},\":userArn\": {\"S\": \"$context.identity.userArn\"},\":ttl\": {\"N\": \"$context.requestTimeEpoch\"}, \":expTTL\": {\"N\": \"31536076723\"}},\
+            \"UpdateExpression\": \"SET #u = :u, #o = :o, #ts = :ts, #ip = :ip, #accId = :accId, #caller = :caller, #principalOrgId = :principalOrgId, #userAgent = :userAgent, #userArn = :userArn, #ttl = (:ttl + :expTTL)\", \
             \"ReturnValues\": \"ALL_NEW\"}" }
         passthroughBehavior: "when_no_templates"
         responses:
