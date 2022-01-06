@@ -99,6 +99,9 @@ Resources:
               KeyType: HASH
           Projection:
             ProjectionType: ALL
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   ##   CloudFront distribution
   CloudFrontDistro:
