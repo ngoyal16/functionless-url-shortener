@@ -86,12 +86,12 @@ paths:
         uri: { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:dynamodb:action/UpdateItem" }
         httpMethod: "POST"
         requestTemplates:
-          application/json: { "Fn::Sub": "{\"TableName\": \"${LinkTable}\",\
+            application/json: { "Fn::Sub": "#set($expireDate = ($context.requestTimeEpoch / 1000) + ${TTL}){\"TableName\": \"${LinkTable}\",\
             \"ConditionExpression\":\"attribute_not_exists(id)\", \
             \"Key\": {\"id\": {\"S\": $input.json('$.id')}}, \
-            \"ExpressionAttributeNames\": {\"#u\": \"url\",\"#o\": \"owner\",\"#ts\": \"timestamp\",\"#ip\": \"sourceIp\", \"#accId\": \"accountId\", \"#caller\": \"caller\", \"#principalOrgId\": \"principalOrgId\", \"#userAgent\": \"userAgent\", \"#userArn\": \"userArn\"}, \
-            \"ExpressionAttributeValues\":{\":u\": {\"S\": $input.json('$.url')},\":o\": {\"S\": \"$context.identity.user\"},\":ts\": {\"S\": \"$context.requestTime\"},\":ip\": {\"S\": \"$context.identity.sourceIp\"},\":accId\": {\"S\": \"$context.identity.accountId\"},\":caller\": {\"S\": \"$context.identity.caller\"},\":principalOrgId\": {\"S\": \"$context.identity.principalOrgId\"},\":userAgent\": {\"S\": \"$context.identity.userAgent\"},\":userArn\": {\"S\": \"$context.identity.userArn\"}},\
-            \"UpdateExpression\": \"SET #u = :u, #o = :o, #ts = :ts, #ip = :ip, #accId = :accId, #caller = :caller, #principalOrgId = :principalOrgId, #userAgent = :userAgent, #userArn = :userArn\", \
+            \"ExpressionAttributeNames\": {\"#u\": \"url\",\"#o\": \"owner\",\"#ts\": \"timestamp\",\"#ip\": \"sourceIp\", \"#accId\": \"accountId\", \"#caller\": \"caller\", \"#principalOrgId\": \"principalOrgId\", \"#userAgent\": \"userAgent\", \"#userArn\": \"userArn\", \"#ttl\": \"ttl\"}, \
+            \"ExpressionAttributeValues\":{\":u\": {\"S\": $input.json('$.url')},\":o\": {\"S\": \"$context.identity.user\"},\":ts\": {\"S\": \"$context.requestTime\"},\":ip\": {\"S\": \"$context.identity.sourceIp\"},\":accId\": {\"S\": \"$context.identity.accountId\"},\":caller\": {\"S\": \"$context.identity.caller\"},\":principalOrgId\": {\"S\": \"$context.identity.principalOrgId\"},\":userAgent\": {\"S\": \"$context.identity.userAgent\"},\":userArn\": {\"S\": \"$context.identity.userArn\"},\":ttl\": {\"N\": \"$expireDate\"}},\
+            \"UpdateExpression\": \"SET #u = :u, #o = :o, #ts = :ts, #ip = :ip, #accId = :accId, #caller = :caller, #principalOrgId = :principalOrgId, #userAgent = :userAgent, #userArn = :userArn, #ttl = :ttl\", \
             \"ReturnValues\": \"ALL_NEW\"}" }
         passthroughBehavior: "when_no_templates"
         responses:

@@ -17,6 +17,10 @@ Parameters:
     Type: String
     Description: Name of the Domain which will used for short url
     Default: ''
+  TTL:
+    Type: Number
+    Description: TTL time for url to be active
+    Default: 31536000
 
 ###################################################################################################
 ##   Template Resources                                                                          ##
