@@ -38,7 +38,7 @@ paths:
         uri: { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:dynamodb:action/GetItem" }
         httpMethod: "POST"
         requestTemplates:
-          application/json: { "Fn::Sub": "{\"Key\": {\"id\": {\"S\": \"$input.params().path.go\"}}, \"TableName\": \"${LinkTable}\"}" }
+          application/json: { "Fn::Sub": "{\"Key\": {\"id\": {\"S\": \"$input.params().querystring.go\"}}, \"TableName\": \"${LinkTable}\"}" }
         passthroughBehavior: "when_no_templates"
         responses:
           "200":
