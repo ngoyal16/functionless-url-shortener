@@ -141,7 +141,7 @@ paths:
               application/json: {"Fn::Sub": ["#set($inputRoot = $input.path('$')) \
                 {\"id\":\"$inputRoot.Attributes.id.S\", \
                 \"url\":\"$inputRoot.Attributes.url.S\",
-                \"shortUrl\":\"${shortUrlPrefix}/$inputRoot.Attributes.id.S\",
+                \"shortUrl\":\"${shortUrlPrefix}/?go=$inputRoot.Attributes.id.S\",
                 \"timestamp\":\"$inputRoot.Attributes.timestamp.S\", \
                 \"owner\":\"$inputRoot.Attributes.owner.S\"}", {"shortUrlPrefix": {"Ref": "CustomDomainName"}}] }
           "400":
@@ -193,7 +193,7 @@ paths:
               application/json: {"Fn::Sub": ["#set($inputRoot = $input.path('$.Item')) \
                 {\"id\":\"$inputRoot.id.S\", \
                 \"url\":\"$inputRoot.url.S\",
-                \"shortUrl\":\"${shortUrlPrefix}/$inputRoot.id.S\",
+                \"shortUrl\":\"${shortUrlPrefix}/?go=$inputRoot.id.S\",
                 \"timestamp\":\"$inputRoot.timestamp.S\", \
                 \"owner\":\"$inputRoot.owner.S\"}", {"shortUrlPrefix": {"Ref": "CustomDomainName"}}] }
         type: "aws"
