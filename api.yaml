@@ -1,4 +1,4 @@
-openapi: "3.0.1"
+openapi: "3.1.1"
 info:
   title: "URL Shortener API"
   version: "1.0.0"
@@ -15,6 +15,44 @@ x-amazon-apigateway-request-validators:
     validateRequestParameters: false
 
 paths:
+  /:
+    ## URL redirector
+    get:
+      summary: Get a url by ID and redirect
+      x-amazon-apigateway-request-validator: params
+      parameters:
+        - $ref: '#/components/parameters/linkIdHeaderQueryStr'
+      responses:
+        "301":
+          description: "301 redirect"
+          headers:
+            Location:
+              type: "string"
+            Cache-Control:
+              type: "string"
+
+      ## API Gateway Integration
+      x-amazon-apigateway-integration:
+        credentials:
+          Fn::GetAtt: [ DDBReadRole, Arn ]
+        uri: { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:dynamodb:action/GetItem" }
+        httpMethod: "POST"
+        requestTemplates:
+          application/json: { "Fn::Sub": "{\"Key\": {\"id\": {\"S\": \"$input.params('go')\"}}, \"TableName\": \"${LinkTable}\"}" }
+        passthroughBehavior: "when_no_templates"
+        responses:
+          "200":
+            statusCode: "301"
+            responseParameters:
+              method.response.header.Location: "'error?error=url_not_found'"
+              method.response.header.Cache-Control: "'max-age=300'"
+            responseTemplates:
+              application/json: "#set($inputRoot = $input.path('$')) \
+                #if($inputRoot.toString().contains(\"Item\")) \
+                #set($context.responseOverride.header.Location = $inputRoot.Item.url.S) \
+                #end"
+        type: "aws"
+
   /{linkId}:
     ## URL redirector
     get:
@@ -175,6 +213,13 @@ components:
         - id
         - url
   parameters:
+    linkIdHeaderQueryStr:
+      in: query
+      name: go
+      required: true
+      description: Short link ID for full URL
+      schema:
+        type: string
     linkIdHeader:
       in: path
       name: linkId
