@@ -124,7 +124,7 @@ Resources:
             - Access-Control-Request-Method
             - Origin
             - Authorization
-            QueryString: false
+            QueryString: true
           TargetOriginId: "URLShortenerAPIGW"
           ViewerProtocolPolicy: redirect-to-https
         CustomErrorResponses:
