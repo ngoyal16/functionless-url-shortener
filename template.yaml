@@ -125,6 +125,8 @@ Resources:
             - Origin
             - Authorization
             QueryString: true
+            QueryStringCacheKeys:
+              - go
           TargetOriginId: "URLShortenerAPIGW"
           ViewerProtocolPolicy: redirect-to-https
         CustomErrorResponses:
