@@ -124,13 +124,15 @@ paths:
         uri: { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:dynamodb:action/UpdateItem" }
         httpMethod: "POST"
         requestTemplates:
-            application/json: { "Fn::Sub": "#set($expireDate = ($context.requestTimeEpoch / 1000) + ($input.json('$.ttl') | ${TTL})){\"TableName\": \"${LinkTable}\",\
-            \"ConditionExpression\":\"attribute_not_exists(id)\", \
-            \"Key\": {\"id\": {\"S\": $input.json('$.id')}}, \
-            \"ExpressionAttributeNames\": {\"#u\": \"url\",\"#o\": \"owner\",\"#ts\": \"timestamp\",\"#ip\": \"sourceIp\", \"#accId\": \"accountId\", \"#caller\": \"caller\", \"#principalOrgId\": \"principalOrgId\", \"#userAgent\": \"userAgent\", \"#userArn\": \"userArn\", \"#ttl\": \"ttl\"}, \
-            \"ExpressionAttributeValues\":{\":u\": {\"S\": $input.json('$.url')},\":o\": {\"S\": \"$context.identity.user\"},\":ts\": {\"S\": \"$context.requestTime\"},\":ip\": {\"S\": \"$context.identity.sourceIp\"},\":accId\": {\"S\": \"$context.identity.accountId\"},\":caller\": {\"S\": \"$context.identity.caller\"},\":principalOrgId\": {\"S\": \"$context.identity.principalOrgId\"},\":userAgent\": {\"S\": \"$context.identity.userAgent\"},\":userArn\": {\"S\": \"$context.identity.userArn\"},\":ttl\": {\"N\": \"$expireDate\"}},\
-            \"UpdateExpression\": \"SET #u = :u, #o = :o, #ts = :ts, #ip = :ip, #accId = :accId, #caller = :caller, #principalOrgId = :principalOrgId, #userAgent = :userAgent, #userArn = :userArn, #ttl = :ttl\", \
-            \"ReturnValues\": \"ALL_NEW\"}" }
+            application/json: { "Fn::Sub": "#set($ttl = $utils.defaultIfNull($input.json('$.ttl'), ${TTL})) \
+              #set($expireDate = ($context.requestTimeEpoch / 1000) + $ttl) \
+              {\"TableName\": \"${LinkTable}\",\
+              \"ConditionExpression\":\"attribute_not_exists(id)\", \
+              \"Key\": {\"id\": {\"S\": $input.json('$.id')}}, \
+              \"ExpressionAttributeNames\": {\"#u\": \"url\",\"#o\": \"owner\",\"#ts\": \"timestamp\",\"#ip\": \"sourceIp\", \"#accId\": \"accountId\", \"#caller\": \"caller\", \"#principalOrgId\": \"principalOrgId\", \"#userAgent\": \"userAgent\", \"#userArn\": \"userArn\", \"#ttl\": \"ttl\"}, \
+              \"ExpressionAttributeValues\":{\":u\": {\"S\": $input.json('$.url')},\":o\": {\"S\": \"$context.identity.user\"},\":ts\": {\"S\": \"$context.requestTime\"},\":ip\": {\"S\": \"$context.identity.sourceIp\"},\":accId\": {\"S\": \"$context.identity.accountId\"},\":caller\": {\"S\": \"$context.identity.caller\"},\":principalOrgId\": {\"S\": \"$context.identity.principalOrgId\"},\":userAgent\": {\"S\": \"$context.identity.userAgent\"},\":userArn\": {\"S\": \"$context.identity.userArn\"},\":ttl\": {\"N\": \"$expireDate\"}},\
+              \"UpdateExpression\": \"SET #u = :u, #o = :o, #ts = :ts, #ip = :ip, #accId = :accId, #caller = :caller, #principalOrgId = :principalOrgId, #userAgent = :userAgent, #userArn = :userArn, #ttl = :ttl\", \
+              \"ReturnValues\": \"ALL_NEW\"}" }
         passthroughBehavior: "when_no_templates"
         responses:
           "200":
@@ -213,7 +215,6 @@ components:
           type: integer
           description: Time-to-live in seconds
           minimum: 0
-          maximum: { "Fn::Sub": "${TTL}" }
           multipleOf: 1
       required:
         - id
