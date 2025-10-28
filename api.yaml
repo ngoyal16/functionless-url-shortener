@@ -128,7 +128,7 @@ paths:
               #set($ttlFromBody = $input.json('$.ttl')) \
               #set($ttlFromBody = $Integer.parseInt($ttlFromBody)) \
               #set($ttl = ${TTL}) \
-              #if($ttlFromBody != 0 && $ttlFromBody < $ttl)#set($ttl = $ttlFromBody)#end \                    
+              #if($ttlFromBody != 0)#set($ttl = $ttlFromBody)#end \                    
               #set($expireDate = ($context.requestTimeEpoch / 1000) + $ttl) \
               {\"TableName\": \"${LinkTable}\",\
               \"ConditionExpression\":\"attribute_not_exists(id)\", \
