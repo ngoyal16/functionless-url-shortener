@@ -214,6 +214,7 @@ components:
           description: Time-to-live in seconds
           minimum: 0
           maximum: { "Fn::Sub": "${TTL}" }
+          multipleOf: 1
       required:
         - id
         - url
