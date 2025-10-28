@@ -125,7 +125,8 @@ paths:
         httpMethod: "POST"
         requestTemplates:
             application/json: { "Fn::Sub": "#set($Integer = 0) \
-              #set($ttlFromBody = $Integer.parseInt($input.json('$.ttl'))) \
+              #set($ttlFromBody = $input.json('$.ttl')) \
+              #set($ttlFromBody = $Integer.parseInt($ttlFromBody)) \
               #set($ttl = ${TTL}) \
               #if($ttlFromBody != 0 && $ttlFromBody < $ttl)#set($ttl = $ttlFromBody)#end \                    
               #set($expireDate = ($context.requestTimeEpoch / 1000) + $ttl) \
