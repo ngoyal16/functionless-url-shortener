@@ -124,8 +124,8 @@ paths:
         uri: { "Fn::Sub": "arn:aws:apigateway:${AWS::Region}:dynamodb:action/UpdateItem" }
         httpMethod: "POST"
         requestTemplates:
-            application/json: { "Fn::Sub": "#set($ttl = $utils.defaultIfNull($input.json('$.ttl'), ${TTL})) \
-              #set($expireDate = ($context.requestTimeEpoch / 1000) + $ttl) \
+            application/json: { "Fn::Sub": "#set($iTTL = $utils.defaultIfNull($input.json('$.ttl'), ${TTL})) \
+              #set($expireDate = ($context.requestTimeEpoch / 1000) + $iTTL) \
               {\"TableName\": \"${LinkTable}\",\
               \"ConditionExpression\":\"attribute_not_exists(id)\", \
               \"Key\": {\"id\": {\"S\": $input.json('$.id')}}, \
@@ -214,7 +214,7 @@ components:
         ttl:
           type: integer
           description: Time-to-live in seconds
-          minimum: 0
+          minimum: 1
           multipleOf: 1
       required:
         - id
